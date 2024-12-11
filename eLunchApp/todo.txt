@@ -1,0 +1,10 @@
+napisac servicey
+napisac controllery
+dodac Result zamiast wywalania wyjatkow
+
+global Exception handler
+customowe Asserty i creatory dto
+
+zamiasst put zrobic add i edit i add niech zwraca i sie da CachePut
+
+magic numbery

@@ -11,7 +11,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-public class MenuItem {
+public class MenuItem implements Editable<MenuItem> {
 
     @Id
     @GeneratedValue
@@ -19,7 +19,7 @@ public class MenuItem {
 
     @Column(unique = true)
     @NotNull
-//    @Convert(converter = UUIDConverter.class) dla jednego
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
     @NotBlank
@@ -37,4 +37,13 @@ public class MenuItem {
 
     @ManyToOne
     private Restaurant restaurant;
+
+    @Override
+    public void edit(MenuItem other) {
+        name = other.name;
+        price = other.price;
+        restaurant.edit(other.restaurant);
+        for (int i = 0; i < dishes.size(); ++i)
+            dishes.get(i).edit(other.dishes.get(i));
+    }
 }

@@ -7,7 +7,7 @@ import org.springframework.lang.Nullable;
 
 @Embeddable
 @Data
-public class Address {
+public class Address<T extends Address<T>> implements Editable<T> {
 
     @NotNull
     private String street;
@@ -29,4 +29,15 @@ public class Address {
 
     @Nullable
     private String state;
+
+    @Override
+    public void edit(Address other) {
+        street = other.street;
+        streetNumber = other.streetNumber;
+        localNumber = other.localNumber;
+        borough = other.borough;
+        city = other.city;
+        country = other.country;
+        state = other.state;
+    }
 }

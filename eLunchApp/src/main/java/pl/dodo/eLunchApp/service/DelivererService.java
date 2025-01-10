@@ -10,7 +10,8 @@ import java.util.UUID;
 
 public interface DelivererService {
     List<DelivererDTOBasic> getAll();
-    Result<Void> put(UUID uuid, DelivererDTOExtended dtoExtended);
+    Result<Void> add(DelivererDTOExtended dtoExtended);
+    Result<Void> edit(UUID uuid, DelivererDTOExtended dtoExtended);
     Result<Void> delete(UUID uuid);
     Result<DelivererDTOExtended> getByUuid(UUID uuid);
 }

@@ -1,24 +1,23 @@
 package pl.dodo.eLunchApp.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import pl.dodo.eLunchApp.converter.UUIDConverter;
 
 import java.util.UUID;
 
 @Entity
 @Data
-public class Ingredient {
+public class Ingredient implements Editable<Ingredient> {
     @Id
     @GeneratedValue
     private Long id;
 
     @Column(unique = true)
     @NotNull
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
     @NotBlank
@@ -26,4 +25,10 @@ public class Ingredient {
 
     @NotNull
     private Boolean isAllergen;
+
+    @Override
+    public void edit(Ingredient other) {
+        name = other.name;
+        isAllergen = other.isAllergen;
+    }
 }

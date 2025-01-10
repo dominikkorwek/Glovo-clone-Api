@@ -12,7 +12,7 @@ import java.time.Instant;
 
 @Entity
 @Data
-public class OperationEvidence {
+public class OperationEvidence implements Editable<OperationEvidence> {
     @Id
     @GeneratedValue
     private Long id;
@@ -33,4 +33,12 @@ public class OperationEvidence {
     @NotNull
     @ManyToOne
     private User user;
+
+    @Override
+    public void edit(OperationEvidence other) {
+        date = other.date;
+        type = other.type;
+        amount = other.amount;
+        user.edit(other.user);
+    }
 }

@@ -6,6 +6,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
+import pl.dodo.eLunchApp.converter.UUIDConverter;
 import pl.dodo.eLunchApp.enums.DiscountUnit;
 
 import java.math.BigDecimal;
@@ -14,7 +15,7 @@ import java.util.UUID;
 
 @Entity
 @Data
-public class DiscountCode {
+public class DiscountCode implements Editable<DiscountCode> {
 
     @Id
     @GeneratedValue
@@ -22,6 +23,7 @@ public class DiscountCode {
 
     @Column(unique = true)
     @NotNull
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
     @NotBlank
@@ -42,4 +44,15 @@ public class DiscountCode {
 
     @ManyToMany
     private List<Restaurant> restaurants;
+
+    @Override
+    public void edit(DiscountCode other) {
+        code = other.code;
+        discount = other.discount;
+        discountUnit = other.discountUnit;
+        for (int i = 0;  i < users.size(); ++i)
+            users.get(i).edit(other.users.get(i));
+        for (int i = 0; i < restaurants.size(); ++i)
+            restaurants.get(i).edit(other.restaurants.get(i));
+    }
 }

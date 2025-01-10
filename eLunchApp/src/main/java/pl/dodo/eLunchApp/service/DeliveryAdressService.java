@@ -8,7 +8,8 @@ import java.util.UUID;
 
 public interface DeliveryAdressService {
     List<DeliveryAddressDTOExtended> getAll();
-    Result<Void> put(UUID uuid, DeliveryAddressDTOExtended dtoExtended);
+    Result<Void> add(DeliveryAddressDTOExtended dtoExtended);
+    Result<Void> edit(UUID uuid, DeliveryAddressDTOExtended dtoExtended);
     Result<Void> delete(UUID uuid);
     Result<DeliveryAddressDTOExtended> getByUuid(UUID uuid);
 }

@@ -42,6 +42,6 @@ public class OpenTimeServiceImpl extends BaseService implements OpenTimeService 
 
     @Override
     public Result<OpenTimeDTOExtended> getByUuid(UUID uuid) {
-        return getByUuid(uuid,openTimeRepository,openTimeMapper::mapToDtoExtended, OpenTime.class);
+        return getEntityByUuid(uuid,openTimeRepository,openTimeMapper::mapToDtoExtended, OpenTime.class);
     }
 }

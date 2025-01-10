@@ -7,6 +7,7 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import pl.dodo.eLunchApp.converter.UUIDConverter;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -15,13 +16,14 @@ import java.util.UUID;
 @Entity
 @Data
 @Table(name = "orders")
-public class Order {
+public class Order implements Editable<Order> {
     @Id
     @GeneratedValue
     private Long id;
 
     @Column(unique = true)
     @NotNull
+    @Convert(converter = UUIDConverter.class)
     private UUID uuid;
 
     @Column(scale = 2,precision = 12)
@@ -63,4 +65,18 @@ public class Order {
     @NotNull
     @ManyToOne
     private Restaurant restaurant;
+
+    @Override
+    public void edit(Order other) {
+        price = other.price;
+        discountCode = other.discountCode;
+        amountToPay = other.amountToPay;
+        note = other.note;
+        orderStatus = other.orderStatus;
+        for (int i = 0; i < orderItems.size(); ++i)
+            orderItems.get(i).edit(other.orderItems.get(i));
+        user.edit(other.user);
+        deliverer.edit(other.deliverer);
+        restaurant.edit(other.restaurant);
+    }
 }

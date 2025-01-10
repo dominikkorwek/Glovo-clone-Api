@@ -8,11 +8,13 @@ import org.springframework.stereotype.Service;
 import pl.dodo.eLunchApp.dto.Employee.EmployeeDTOBasic;
 import pl.dodo.eLunchApp.dto.Employee.EmployeeDTOExtended;
 import pl.dodo.eLunchApp.exceptions.Result;
+import pl.dodo.eLunchApp.exceptions.eLunchError;
 import pl.dodo.eLunchApp.mapper.EmployeeMapper;
 import pl.dodo.eLunchApp.model.Employee;
 import pl.dodo.eLunchApp.repository.EmployeeRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -25,15 +27,22 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService{
     @Override
     @Cacheable(cacheNames = "employees")
     public List<EmployeeDTOBasic> getAll() {
-        return employeeRepository.findAll().stream()
-                .map(employeeMapper::mapToDtoBasic)
-                .toList();
+        return getAllEntites(employeeRepository,employeeMapper::mapToDtoBasic);
     }
 
     @Override
     @CacheEvict(cacheNames = "employees", allEntries = true)
     public Result<Void> put(UUID uuid, EmployeeDTOExtended basicDelivererDto) {
-        //todo
+        UUID dtoUuid = basicDelivererDto.getEmployeeDTOBasic().getEmployeeDTOId().getUuid();
+        if (!dtoUuid.equals(uuid))
+            return Result.failure(new eLunchError.InvalidUuid(dtoUuid, uuid));
+
+        Optional<Employee> byUuid = employeeRepository.findByUuid(uuid);
+        if (byUuid.isEmpty())
+            return Result.failure(new eLunchError.ObjectNotFound(Employee.class));
+
+        byUuid.get().edit(employeeMapper.mapToEntity(basicDelivererDto));
+        return Result.success(null);
     }
 
     @Override
@@ -44,6 +53,6 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService{
 
     @Override
     public Result<EmployeeDTOExtended> getByUuid(UUID uuid) {
-        return getByUuid(uuid,employeeRepository,employeeMapper::mapToDtoExtended, Employee.class);
+        return getEntityByUuid(uuid,employeeRepository,employeeMapper::mapToDtoExtended, Employee.class);
     }
 }

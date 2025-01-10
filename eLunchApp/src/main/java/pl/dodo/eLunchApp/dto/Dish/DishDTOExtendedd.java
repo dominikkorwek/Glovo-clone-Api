@@ -13,6 +13,9 @@ import java.util.List;
 
 @Data
 public class DishDTOExtendedd {
+
+	private DishDTOId dishDTOId;
+
 	@NotNull
 	@Min(1)
 	private Integer quantity;

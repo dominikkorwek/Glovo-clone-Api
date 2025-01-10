@@ -17,7 +17,6 @@ import pl.dodo.eLunchApp.repository.UserRepository;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -50,7 +49,7 @@ public class UserServiceImpl extends BaseService implements UserService{
 
     @Override
     public Result<UserDTOExtended> getByUuid(UUID uuid) {
-        return getByUuid(uuid,userRepository,userMapper::mapToDtoExtended, User.class);
+        return getEntityByUuid(uuid,userRepository,userMapper::mapToDtoExtended, User.class);
     }
 
     @SneakyThrows

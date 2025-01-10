@@ -45,7 +45,7 @@ public class OrderItemServiceImpl extends BaseService implements OrderItemServic
 
     @Override
     public Result<OrderItem> getByUuid(UUID uuid) {
-        return getByUuid(uuid, orderItemRepository,e -> e,OrderItem.class);
+        return getEntityByUuid(uuid, orderItemRepository, e -> e,OrderItem.class);
     }
 
     @Override

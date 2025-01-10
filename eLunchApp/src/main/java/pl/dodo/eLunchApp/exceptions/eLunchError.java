@@ -10,4 +10,6 @@ public sealed interface eLunchError extends Error {
     record ObjectNotFound(Class<?> objectName) implements eLunchError {}
     record WrongOrderStatus(@NotNull OrderStatus status) implements eLunchError {}
     record InvalidUuid(UUID expected, UUID got) implements eLunchError {}
+    record InvalidCall(String message) implements eLunchError {}
+    record InvalidValidation(Class<?> objectName) implements eLunchError{}
 }

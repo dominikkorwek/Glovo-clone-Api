@@ -5,12 +5,12 @@ import pl.dodo.eLunchApp.dto.Order.OrderDTOExtended;
 import pl.dodo.eLunchApp.dto.OrderStatus.OrderStatusDTOBasic;
 import pl.dodo.eLunchApp.dto.User.UserDTOExtended;
 import pl.dodo.eLunchApp.exceptions.Result;
+import pl.dodo.eLunchApp.model.Order;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
-public interface OrderService {
+public interface OrderService extends ValidationService<Order> {
     List<OrderDTOBasic> getAll();
     Result<Void> put(UUID uuid, OrderDTOExtended dtoExtended);
     Result<Void> delete(UUID uuid);

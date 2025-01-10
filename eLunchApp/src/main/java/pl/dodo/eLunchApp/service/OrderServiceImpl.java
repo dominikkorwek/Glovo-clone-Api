@@ -5,9 +5,7 @@ import lombok.SneakyThrows;
 import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
-import org.springframework.web.server.ResponseStatusException;
 import pl.dodo.eLunchApp.dto.OperationEvidence.OperationEvidenceDTOBasic;
 import pl.dodo.eLunchApp.dto.OperationEvidence.OperationEvidenceDTOExtended;
 import pl.dodo.eLunchApp.dto.Order.OrderDTOBasic;
@@ -23,7 +21,6 @@ import pl.dodo.eLunchApp.repository.OrderRepository;
 
 import java.time.Instant;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -59,7 +56,7 @@ public class OrderServiceImpl extends BaseService implements OrderService{
 
     @Override
     public Result<OrderDTOExtended> getByUuid(UUID uuid) {
-        return getByUuid(uuid,orderRepository,orderMapper::mapToDtoExtended,Order.class);
+        return getEntityByUuid(uuid,orderRepository,orderMapper::mapToDtoExtended,Order.class);
     }
 
     @SneakyThrows

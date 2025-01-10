@@ -24,4 +24,6 @@ public class MenuItemDTOExtended {
 
 	@NotNull
 	private RestaurantDTOId restaurantDTO;
+
+	private MenuItemDTOBasic menuItemDTOBasic;
 }

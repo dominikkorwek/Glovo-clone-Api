@@ -42,6 +42,6 @@ public class ProductServiceImpl extends BaseService implements ProductService {
 
     @Override
     public Result<ProductDTOExtended> getByUuid(UUID uuid) {
-        return getByUuid(uuid,productRepository,productMapper::mapToDtoExtended, Product.class);
+        return getEntityByUuid(uuid,productRepository,productMapper::mapToDtoExtended, Product.class);
     }
 }

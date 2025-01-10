@@ -42,6 +42,6 @@ public class RestaurantServiceImpl extends BaseService implements RestaurantServ
 
     @Override
     public Result<RestaurantDTOExtended> getByUuid(UUID uuid) {
-        return getByUuid(uuid,restaurantRepository,restaurantMapper::mapToDtoExtended, Restaurant.class);
+        return getEntityByUuid(uuid,restaurantRepository,restaurantMapper::mapToDtoExtended, Restaurant.class);
     }
 }

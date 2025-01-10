@@ -1,5 +1,7 @@
 package pl.dodo.eLunchApp.exceptions;
 
+import lombok.SneakyThrows;
+
 public interface Result<T> {
     static <T> Result<T> success(T data) {
         return new Success<>(data);
@@ -27,9 +29,10 @@ public interface Result<T> {
             return data;
         }
 
+        @SneakyThrows
         @Override
         public Error getError() {
-            throw new InvalidCallException("Call getError() on Success");
+            throw new IllegalAccessException("Call getError() on Success");
         }
     }
 
@@ -39,9 +42,10 @@ public interface Result<T> {
             return false;
         }
 
+        @SneakyThrows
         @Override
         public T getData() {
-            throw new InvalidCallException("Call getData() on Failure");
+            throw new IllegalAccessException("Call getData() on Failure");
         }
 
         @Override

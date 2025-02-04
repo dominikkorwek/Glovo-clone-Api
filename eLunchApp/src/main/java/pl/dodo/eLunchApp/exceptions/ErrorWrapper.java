@@ -1,11 +1,12 @@
 package pl.dodo.eLunchApp.exceptions;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
-import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 
 @Builder
 public record ErrorWrapper(
-        String errorMessage,
-        HttpStatus expectedStatus,
-        String uri,
-        HttpStatus occurredStatus) {}
+        @NotNull String errorMessage,
+        @NotNull HttpStatusCode expectedStatus,
+        @NotNull String uri,
+        @NotNull HttpStatusCode occurredStatus) {}

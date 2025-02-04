@@ -4,13 +4,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
-import pl.dodo.eLunchApp.model.OpenTime;
 import pl.dodo.eLunchApp.model.OperationEvidence;
 import pl.dodo.eLunchApp.model.User;
-
 import java.math.BigDecimal;
-import java.util.Optional;
-import java.util.UUID;
 
 @Repository
 public interface OperationEvidenceRepository extends JpaRepository<OperationEvidence, Long> {

@@ -1,5 +1,6 @@
 package pl.dodo.eLunchApp.controller;
 
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +18,7 @@ import pl.dodo.eLunchApp.validator.GroupsValidator;
 import java.util.List;
 import java.util.UUID;
 
+
 @Validated
 @RestController
 @RequestMapping(value = "/deliverers", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -29,15 +31,12 @@ public class DelivererController {
 
     @GetMapping
     public ResponseEntity<List<DelivererDTOBasic>> getAll(){
-        List<DelivererDTOBasic> list = delivererService.getAll();
-        return new ResponseEntity<>(list, HttpStatus.OK);
+        return new ResponseEntity<>(delivererService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<DelivererDTOExtended> get(@PathVariable UUID uuid){
-        DelivererDTOExtended delivererDTOExtended = delivererService.getByUuid(uuid);
-
-        return new ResponseEntity<>(delivererDTOExtended, HttpStatus.OK);
+    public ResponseEntity<DelivererDTOExtended> get(@PathVariable UUID uuid, HttpServletRequest request){
+        return null;
     }
 
     @PutMapping("/{uuid}")

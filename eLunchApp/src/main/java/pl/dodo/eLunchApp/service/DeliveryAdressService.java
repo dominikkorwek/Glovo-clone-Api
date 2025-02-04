@@ -1,15 +1,16 @@
 package pl.dodo.eLunchApp.service;
 
 import pl.dodo.eLunchApp.dto.DeliveryAddress.DeliveryAddressDTOExtended;
-import pl.dodo.eLunchApp.exceptions.Result;
+import pl.dodo.eLunchApp.exceptions.eLunchError;
+import pl.dodo.eLunchApp.model.DeliveryAddress;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface DeliveryAdressService {
+public interface DeliveryAdressService extends ValidationService<DeliveryAddress> {
     List<DeliveryAddressDTOExtended> getAll();
-    Result<Void> add(DeliveryAddressDTOExtended dtoExtended);
-    Result<Void> edit(UUID uuid, DeliveryAddressDTOExtended dtoExtended);
-    Result<Void> delete(UUID uuid);
-    Result<DeliveryAddressDTOExtended> getByUuid(UUID uuid);
+    void add(DeliveryAddressDTOExtended dtoExtended);
+    void edit(UUID uuid, DeliveryAddressDTOExtended dtoExtended) throws eLunchError.InvalidUuid, eLunchError.ObjectNotFound;
+    void delete(UUID uuid) throws eLunchError.ObjectNotFound;
+    DeliveryAddressDTOExtended getByUuid(UUID uuid) throws eLunchError.ObjectNotFound;
 }

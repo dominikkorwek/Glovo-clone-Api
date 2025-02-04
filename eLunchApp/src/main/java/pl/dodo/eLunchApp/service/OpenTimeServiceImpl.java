@@ -6,9 +6,10 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import pl.dodo.eLunchApp.dto.OpenTime.OpenTimeDTOBasic;
 import pl.dodo.eLunchApp.dto.OpenTime.OpenTimeDTOExtended;
-import pl.dodo.eLunchApp.exceptions.Result;
+import pl.dodo.eLunchApp.exceptions.eLunchError;
 import pl.dodo.eLunchApp.mapper.OpenTimeMapper;
 import pl.dodo.eLunchApp.model.OpenTime;
+import pl.dodo.eLunchApp.model.Restaurant;
 import pl.dodo.eLunchApp.repository.OpenTimeRepository;
 
 import java.util.List;
@@ -20,6 +21,7 @@ import java.util.UUID;
 public class OpenTimeServiceImpl extends BaseService implements OpenTimeService {
     private final OpenTimeRepository openTimeRepository;
     private final OpenTimeMapper openTimeMapper;
+    private final RestaurantService restaurantService;
 
     @Override
     public List<OpenTimeDTOBasic> getAll() {
@@ -29,19 +31,41 @@ public class OpenTimeServiceImpl extends BaseService implements OpenTimeService 
     }
 
     @Override
+    public void add(OpenTimeDTOExtended dtoExtended) {
+        addEntity(dtoExtended, openTimeRepository, openTimeMapper::mapToEntity);
+    }
+
+    @Override
     @CacheEvict(cacheNames = "openTimes", allEntries = true)
-    public Result<Void> put(UUID uuid, OpenTimeDTOExtended openTimeDTOExtended) {
-        //todo
+    public void edit(UUID uuid, OpenTimeDTOExtended openTimeDTOExtended) throws eLunchError.InvalidUuid, eLunchError.ObjectNotFound {
+        UUID dtoUuid = openTimeDTOExtended.getOpenTimeDTOBasic().getUuid();
+        if (!dtoUuid.equals(uuid))
+            throw new eLunchError.InvalidUuid(dtoUuid, uuid);
+
+        OpenTime byUuid = openTimeRepository.findByUuid(uuid)
+                .orElseThrow(() -> new eLunchError.InvalidUuid(uuid,dtoUuid));
+
+        OpenTime openTimeNew = openTimeMapper.mapToEntity(openTimeDTOExtended);
+
+        Restaurant restaurantResult = validateObject(openTimeNew.getRestaurant(), restaurantService);
+        openTimeNew.setRestaurant(restaurantResult);
+
+        byUuid.edit(openTimeNew);
     }
 
     @Override
     @CacheEvict(cacheNames = "openTimes", key = "#uuid")
-    public Result<Void> delete(UUID uuid) {
-        return deleteEntity(uuid,openTimeRepository);
+    public void delete(UUID uuid) throws eLunchError.ObjectNotFound {
+        deleteEntity(uuid,openTimeRepository);
     }
 
     @Override
-    public Result<OpenTimeDTOExtended> getByUuid(UUID uuid) {
-        return getEntityByUuid(uuid,openTimeRepository,openTimeMapper::mapToDtoExtended, OpenTime.class);
+    public OpenTimeDTOExtended getByUuid(UUID uuid) throws eLunchError.ObjectNotFound {
+        return getDtoByUuid(uuid,openTimeRepository,openTimeMapper::mapToDtoExtended, OpenTime.class);
+    }
+
+    @Override
+    public OpenTime validate(OpenTime object) throws eLunchError.ObjectNotFound {
+        return getEntityByUuid(openTimeRepository, object.getUuid(), OpenTime.class);
     }
 }

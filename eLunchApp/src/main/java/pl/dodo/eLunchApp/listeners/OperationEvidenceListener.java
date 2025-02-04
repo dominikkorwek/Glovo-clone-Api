@@ -3,7 +3,9 @@ package pl.dodo.eLunchApp.listeners;
 import lombok.RequiredArgsConstructor;
 import lombok.SneakyThrows;
 import org.springframework.context.event.EventListener;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import pl.dodo.eLunchApp.dto.User.UserDTOExtended;
 import pl.dodo.eLunchApp.events.OperationEvidenceCreator;
 import pl.dodo.eLunchApp.mapper.OperationEvidenceMapper;
@@ -34,15 +36,14 @@ public class OperationEvidenceListener {
         operationEvidence.setUser(user);
 
         validateAccountBalanceAfterOperation(operationEvidence);
-        operationEvidenceService.put(operationEvidence);
+        operationEvidenceService.add(operationEvidence);
     }
 
     @SneakyThrows
     public void validateAccountBalanceAfterOperation(OperationEvidence operationEvidence){
-        BigDecimal accountBalaceAfterOperation = operationEvidenceService.getAccountBalaceAfterOperation(operationEvidence);
+        BigDecimal accountBalanceAfterOperation = operationEvidenceService.getAccountBalaceAfterOperation(operationEvidence);
 
-        if (accountBalaceAfterOperation.compareTo(BigDecimal.ZERO) <= 0)
-            throw new Exception();
-        //todo
+        if (accountBalanceAfterOperation.compareTo(BigDecimal.ZERO) <= 0)
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST);
     }
 }

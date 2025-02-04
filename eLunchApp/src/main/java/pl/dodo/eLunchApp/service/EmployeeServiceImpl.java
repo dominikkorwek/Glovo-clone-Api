@@ -7,14 +7,12 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.dodo.eLunchApp.dto.Employee.EmployeeDTOBasic;
 import pl.dodo.eLunchApp.dto.Employee.EmployeeDTOExtended;
-import pl.dodo.eLunchApp.exceptions.Result;
 import pl.dodo.eLunchApp.exceptions.eLunchError;
 import pl.dodo.eLunchApp.mapper.EmployeeMapper;
 import pl.dodo.eLunchApp.model.Employee;
 import pl.dodo.eLunchApp.repository.EmployeeRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -31,28 +29,31 @@ public class EmployeeServiceImpl extends BaseService implements EmployeeService{
     }
 
     @Override
+    public void add(EmployeeDTOExtended dtoExtended) {
+        addEntity(dtoExtended, employeeRepository, employeeMapper::mapToEntity);
+    }
+
+    @Override
     @CacheEvict(cacheNames = "employees", allEntries = true)
-    public Result<Void> put(UUID uuid, EmployeeDTOExtended basicDelivererDto) {
+    public void edit(UUID uuid, EmployeeDTOExtended basicDelivererDto) throws eLunchError.InvalidUuid, eLunchError.ObjectNotFound {
         UUID dtoUuid = basicDelivererDto.getEmployeeDTOBasic().getEmployeeDTOId().getUuid();
         if (!dtoUuid.equals(uuid))
-            return Result.failure(new eLunchError.InvalidUuid(dtoUuid, uuid));
+            throw new eLunchError.InvalidUuid(dtoUuid, uuid);
 
-        Optional<Employee> byUuid = employeeRepository.findByUuid(uuid);
-        if (byUuid.isEmpty())
-            return Result.failure(new eLunchError.ObjectNotFound(Employee.class));
+        Employee byUuid = employeeRepository.findByUuid(uuid)
+                .orElseThrow(() -> new eLunchError.ObjectNotFound(Employee.class));
 
-        byUuid.get().edit(employeeMapper.mapToEntity(basicDelivererDto));
-        return Result.success(null);
+        byUuid.edit(employeeMapper.mapToEntity(basicDelivererDto));
     }
 
     @Override
     @CacheEvict(cacheNames = "employees", key = "#uuid")
-    public Result<Void> delete(UUID uuid) {
-        return deleteEntity(uuid,employeeRepository);
+    public void delete(UUID uuid) throws eLunchError.ObjectNotFound {
+        deleteEntity(uuid,employeeRepository);
     }
 
     @Override
-    public Result<EmployeeDTOExtended> getByUuid(UUID uuid) {
-        return getEntityByUuid(uuid,employeeRepository,employeeMapper::mapToDtoExtended, Employee.class);
+    public EmployeeDTOExtended getByUuid(UUID uuid) throws eLunchError.ObjectNotFound {
+        return getDtoByUuid(uuid,employeeRepository,employeeMapper::mapToDtoExtended, Employee.class);
     }
 }

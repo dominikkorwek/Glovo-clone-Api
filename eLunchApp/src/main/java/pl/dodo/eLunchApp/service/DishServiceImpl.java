@@ -6,7 +6,6 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.dodo.eLunchApp.dto.Dish.DishDTOExtendedd;
-import pl.dodo.eLunchApp.exceptions.Result;
 import pl.dodo.eLunchApp.exceptions.eLunchError;
 import pl.dodo.eLunchApp.mapper.DishMapper;
 import pl.dodo.eLunchApp.model.Dish;
@@ -15,7 +14,6 @@ import pl.dodo.eLunchApp.model.Product;
 import pl.dodo.eLunchApp.repository.DishRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -35,38 +33,43 @@ public class DishServiceImpl extends BaseService implements DishService{
     }
 
     @Override
+    public void add(DishDTOExtendedd dtoExtendedd) {
+        addEntity(dtoExtendedd, dishRepository, dishMapper::mapToEntity);
+    }
+
+    @Override
     @CacheEvict(cacheNames = "dishes", allEntries = true)
-    public Result<Void> put(UUID uuid, DishDTOExtendedd dtoExtended) {
+    public void edit(UUID uuid, DishDTOExtendedd dtoExtended) throws eLunchError.ObjectNotFound, eLunchError.InvalidUuid {
         UUID dtoUuid = dtoExtended.getDishDTOId().getUuid();
         if (!dtoUuid.equals(uuid))
-            return Result.failure(new eLunchError.InvalidUuid(dtoUuid,uuid));
+            throw new eLunchError.InvalidUuid(dtoUuid,uuid);
 
-        Optional<Dish> byUuid = dishRepository.findByUuid(uuid);
-        if (byUuid.isEmpty())
-            return Result.failure(new eLunchError.ObjectNotFound(Dish.class));
+        Dish byUuid = dishRepository.findByUuid(uuid)
+                .orElseThrow(() -> new eLunchError.ObjectNotFound(Dish.class));
 
-        Dish dishNew = byUuid.get();
-        Result<Product> productResult = validateObject(dishNew.getProduct(), productService);
-        if (!productResult.isSuccess())
-            return Result.failure(productResult.getError());
-        Result<List<MenuItem>> listResult = validateList(dishNew.getMenuItems(), MenuItem.class, menuItemService);
-        if (!listResult.isSuccess())
-            return Result.failure(listResult.getError());
+        Dish dishNew = dishMapper.mapToEntity(dtoExtended);
 
-        dishNew.setProduct(productResult.getData());
-        dishNew.setMenuItems(listResult.getData());
-        byUuid.get().edit(dishNew);
-        return Result.success(null);
+        Product productResult = validateObject(dishNew.getProduct(), productService);
+        List<MenuItem> listResult = validateList(dishNew.getMenuItems(), menuItemService);
+
+        dishNew.setProduct(productResult);
+        dishNew.setMenuItems(listResult);
+        byUuid.edit(dishNew);
     }
 
     @Override
     @CacheEvict(cacheNames = "dishes", key = "#uuid")
-    public Result<Void> delete(UUID uuid) {
-        return deleteEntity(uuid,dishRepository);
+    public void delete(UUID uuid) throws eLunchError.ObjectNotFound {
+        deleteEntity(uuid,dishRepository);
     }
 
     @Override
-    public Result<DishDTOExtendedd> getByUuid(UUID uuid) {
-        return getEntityByUuid(uuid,dishRepository,dishMapper::mapToDtoExtended, Dish.class);
+    public DishDTOExtendedd getByUuid(UUID uuid) throws eLunchError.ObjectNotFound {
+        return getDtoByUuid(uuid,dishRepository,dishMapper::mapToDtoExtended, Dish.class);
+    }
+
+    @Override
+    public Dish validate(Dish dish) throws eLunchError.ObjectNotFound {
+        return getEntityByUuid(dishRepository, dish.getUuid(),Dish.class);
     }
 }

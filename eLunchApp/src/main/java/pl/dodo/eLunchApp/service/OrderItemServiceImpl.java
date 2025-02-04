@@ -6,7 +6,7 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.dodo.eLunchApp.enums.DiscountUnit;
-import pl.dodo.eLunchApp.exceptions.Result;
+import pl.dodo.eLunchApp.exceptions.eLunchError;
 import pl.dodo.eLunchApp.model.DiscountCode;
 import pl.dodo.eLunchApp.model.OrderItem;
 import pl.dodo.eLunchApp.repository.OrderItemRepository;
@@ -32,20 +32,19 @@ public class OrderItemServiceImpl extends BaseService implements OrderItemServic
 
     @Override
     @CacheEvict(cacheNames = "orderItems", allEntries = true)
-    public Result<Void> add(OrderItem orderItem) {
+    public void add(OrderItem orderItem) {
         orderItemRepository.save(orderItem);
-        return Result.success(null);
     }
 
     @Override
     @CacheEvict(cacheNames = "orderItems", key = "#orderItem.getUuid()")
-    public Result<Void> delete(OrderItem orderItem) {
-        return deleteEntity(orderItem.getUuid(),orderItemRepository);
+    public void delete(OrderItem orderItem) throws eLunchError.ObjectNotFound {
+        deleteEntity(orderItem.getUuid(),orderItemRepository);
     }
 
     @Override
-    public Result<OrderItem> getByUuid(UUID uuid) {
-        return getEntityByUuid(uuid, orderItemRepository, e -> e,OrderItem.class);
+    public OrderItem getByUuid(UUID uuid) throws eLunchError.ObjectNotFound {
+        return getDtoByUuid(uuid, orderItemRepository, e -> e,OrderItem.class);
     }
 
     @Override
@@ -61,5 +60,10 @@ public class OrderItemServiceImpl extends BaseService implements OrderItemServic
                             discountCode.getDiscount())
                             .divide(BigDecimal.valueOf(100), RoundingMode.HALF_UP));
         };
+    }
+
+    @Override
+    public OrderItem validate(OrderItem object) throws eLunchError.ObjectNotFound {
+        return getEntityByUuid(orderItemRepository, object.getUuid(), OrderItem.class);
     }
 }

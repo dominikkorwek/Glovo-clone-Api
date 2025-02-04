@@ -50,16 +50,14 @@ public class User implements Editable<User> {
     @Override
     public void edit(User other) {
         personalData = other.personalData;
+        for (int i = 0; i < orders.size(); ++i)
+            orders.get(i).edit(other.orders.get(i));
         if (addresses == null || other.addresses == null)
             addresses = other.addresses;
         else
             for (int i = 0;  i < addresses.size(); ++i)
                 addresses.get(i).edit(other.addresses.get(i));
         loginData = other.loginData;
-        for (int i = 0; i < orders.size(); ++i)
-            orders.get(i).edit(other.orders.get(i));
-        for (int i = 0; i < operationEvidences.size(); ++i)
-            operationEvidences.get(i).edit(other.operationEvidences.get(i));
         for (int i = 0; i < discountCodes.size(); ++i)
             discountCodes.get(i).edit(other.discountCodes.get(i));
         archive = other.archive;

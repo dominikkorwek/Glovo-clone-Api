@@ -9,10 +9,9 @@ import org.springframework.stereotype.Service;
 import pl.dodo.eLunchApp.dto.User.UserDTOBasic;
 import pl.dodo.eLunchApp.dto.User.UserDTOExtended;
 import pl.dodo.eLunchApp.dto.User.UserDTOId;
-import pl.dodo.eLunchApp.exceptions.Result;
 import pl.dodo.eLunchApp.exceptions.eLunchError;
 import pl.dodo.eLunchApp.mapper.UserMapper;
-import pl.dodo.eLunchApp.model.User;
+import pl.dodo.eLunchApp.model.*;
 import pl.dodo.eLunchApp.repository.UserRepository;
 
 import java.util.List;
@@ -26,6 +25,9 @@ public class UserServiceImpl extends BaseService implements UserService{
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+    private final DeliveryAdressService deliveryAdressService;
+    private final OrderService orderService;
+    private final DiscountCodeService discountCodeService;
 
     @Override
     @Cacheable("users")
@@ -36,30 +38,58 @@ public class UserServiceImpl extends BaseService implements UserService{
     }
 
     @Override
+    public void add(UserDTOExtended dtoExtended) {
+        addEntity(dtoExtended, userRepository, userMapper::mapToEntity);
+    }
+
+    @Override
     @CacheEvict(cacheNames = "users", allEntries = true)
-    public void put(UUID uuid, UserDTOExtended delivererDto) {
-        //todo
+    public void edit(UUID uuid, UserDTOExtended userDTOExtended) throws eLunchError.InvalidUuid, eLunchError.ObjectNotFound {
+        UUID dtoUuid = userDTOExtended.getUserDTOBasic().getUserDTOId().getUuid();
+        if (!dtoUuid.equals(uuid))
+            throw new eLunchError.InvalidUuid(dtoUuid, uuid);
+
+        User byUuid = userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new eLunchError.ObjectNotFound(User.class));
+
+        User userNew = userMapper.mapToEntity(userDTOExtended);
+
+        List<Order> orders = validateList(userNew.getOrders(), orderService);
+        List<DiscountCode> discountCodes = validateList(userNew.getDiscountCodes(), discountCodeService);
+
+        if (userNew.getAddresses() != null) {
+            List<DeliveryAddress> deliveryAddresses = validateList(userNew.getAddresses(), deliveryAdressService);
+            userNew.setAddresses(deliveryAddresses);
+        }
+
+        userNew.setOrders(orders);
+        userNew.setDiscountCodes(discountCodes);
+        byUuid.edit(userNew);
     }
 
     @Override
     @CacheEvict(cacheNames = "users", key = "#uuid")
-    public Result<Void> delete(UUID uuid) {
-        return deleteEntity(uuid,userRepository);
+    public void delete(UUID uuid) throws eLunchError.ObjectNotFound {
+        deleteEntity(uuid,userRepository);
     }
 
     @Override
-    public Result<UserDTOExtended> getByUuid(UUID uuid) {
-        return getEntityByUuid(uuid,userRepository,userMapper::mapToDtoExtended, User.class);
+    public UserDTOExtended getByUuid(UUID uuid) throws eLunchError.ObjectNotFound {
+        return getDtoByUuid(uuid,userRepository,userMapper::mapToDtoExtended, User.class);
     }
 
     @SneakyThrows
     @Override
-    public Result<Void> validateNewOperation(UUID uuid, UserDTOId userDtoId) {
+    public void validateNewOperation(UUID uuid, UserDTOId userDtoId) {
         if (!Objects.equals(uuid,userDtoId.getUuid()))
-            return Result.failure(new eLunchError.InvalidUuid(userDtoId.getUuid(), uuid));
+            throw new eLunchError.InvalidUuid(userDtoId.getUuid(), uuid);
 
-        return userRepository.findByUuid(uuid)
-                .map(e -> Result.<Void>success(null))
-                .orElse(Result.failure(new eLunchError.ObjectNotFound(User.class)));
+        userRepository.findByUuid(uuid)
+                .orElseThrow(() -> new eLunchError.ObjectNotFound(User.class));
+    }
+
+    @Override
+    public User validate(User object) throws eLunchError.ObjectNotFound {
+        return getEntityByUuid(userRepository, object.getUuid(), User.class);
     }
 }

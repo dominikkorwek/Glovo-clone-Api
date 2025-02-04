@@ -1,7 +1,6 @@
 package pl.dodo.eLunchApp.service;
 
 import org.springframework.stereotype.Service;
-import pl.dodo.eLunchApp.exceptions.Result;
 import pl.dodo.eLunchApp.model.OperationEvidence;
 import pl.dodo.eLunchApp.model.User;
 import pl.dodo.eLunchApp.repository.OperationEvidenceRepository;
@@ -25,9 +24,8 @@ public class OperationEvindenceServiceImpl implements OperationEvidenceService{
     }
 
     @Override
-    public Result<Void> add(OperationEvidence operationEvidence) {
+    public void add(OperationEvidence operationEvidence) {
         operationEvidenceRepository.save(operationEvidence);
-        return Result.success(null);
     }
 
     @Override
@@ -45,4 +43,5 @@ public class OperationEvindenceServiceImpl implements OperationEvidenceService{
             case WITHDRAW, PAYMENT -> before.subtract(operationEvidence.getAmount());
         };
     }
+
 }

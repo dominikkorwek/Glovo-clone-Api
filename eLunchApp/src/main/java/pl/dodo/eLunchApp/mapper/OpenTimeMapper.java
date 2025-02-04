@@ -15,6 +15,4 @@ public interface OpenTimeMapper {
 
     @InheritInverseConfiguration(name = "mapToDtoExtended")
     OpenTime mapToEntity(OpenTimeDTOExtended dtoExtended);
-
-    void updateFromDto(OpenTimeDTOExtended openTimeDTOExtended, OpenTime openTime);
 }

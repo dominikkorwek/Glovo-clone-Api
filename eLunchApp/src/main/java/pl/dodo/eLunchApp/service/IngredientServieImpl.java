@@ -6,14 +6,12 @@ import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.dodo.eLunchApp.dto.Ingredient.IngredientDTOBasic;
-import pl.dodo.eLunchApp.exceptions.Result;
 import pl.dodo.eLunchApp.exceptions.eLunchError;
 import pl.dodo.eLunchApp.mapper.IngredientMapper;
 import pl.dodo.eLunchApp.model.Ingredient;
 import pl.dodo.eLunchApp.repository.IngredientRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -30,27 +28,35 @@ public class IngredientServieImpl extends BaseService implements IngredientServi
     }
 
     @Override
+    public void add(IngredientDTOBasic dtoBasic) {
+        addEntity(dtoBasic, ingredientRepository, ingredientMapper::mapToEntity);
+    }
+
+    @Override
     @CacheEvict(cacheNames = "ingredients", allEntries = true)
-    public Result<Void> put(UUID uuid, IngredientDTOBasic dtoBasic) {
+    public void edit(UUID uuid, IngredientDTOBasic dtoBasic) throws eLunchError.InvalidUuid, eLunchError.ObjectNotFound {
         if (!dtoBasic.getUuid().equals(uuid))
-            return Result.failure(new eLunchError.InvalidUuid(dtoBasic.getUuid(),uuid));
+            throw new eLunchError.InvalidUuid(dtoBasic.getUuid(),uuid);
 
-        Optional<Ingredient> byUuid = ingredientRepository.findByUuid(uuid);
-        if (byUuid.isEmpty())
-            return Result.failure(new eLunchError.ObjectNotFound(Ingredient.class));
+        Ingredient byUuid = ingredientRepository.findByUuid(uuid)
+                .orElseThrow(() -> new eLunchError.ObjectNotFound(Ingredient.class));
 
-        byUuid.get().edit(ingredientMapper.mapToEntity(dtoBasic));
-        return Result.success(null);
+        byUuid.edit(ingredientMapper.mapToEntity(dtoBasic));
     }
 
     @Override
     @CacheEvict(cacheNames = "ingredients", key = "#uuid")
-    public Result<Void> delete(UUID uuid) {
-        return deleteEntity(uuid,ingredientRepository);
+    public void delete(UUID uuid) throws eLunchError.ObjectNotFound {
+        deleteEntity(uuid,ingredientRepository);
     }
 
     @Override
-    public Result<IngredientDTOBasic> getByUuid(UUID uuid) {
-        return getEntityByUuid(uuid,ingredientRepository,ingredientMapper::mapToDtoBasic, Ingredient.class);
+    public IngredientDTOBasic getByUuid(UUID uuid) throws eLunchError.ObjectNotFound {
+        return getDtoByUuid(uuid,ingredientRepository,ingredientMapper::mapToDtoBasic, Ingredient.class);
+    }
+
+    @Override
+    public Ingredient validate(Ingredient object) throws eLunchError.ObjectNotFound {
+        return getEntityByUuid(ingredientRepository, object.getUuid(), Ingredient.class);
     }
 }

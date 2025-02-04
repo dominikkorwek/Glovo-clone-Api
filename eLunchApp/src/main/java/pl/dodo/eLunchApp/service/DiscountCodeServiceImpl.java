@@ -7,7 +7,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import pl.dodo.eLunchApp.dto.Discount.DiscountCodeDTOBasic;
 import pl.dodo.eLunchApp.dto.Discount.DiscountCodeDTOExtended;
-import pl.dodo.eLunchApp.exceptions.Result;
 import pl.dodo.eLunchApp.exceptions.eLunchError;
 import pl.dodo.eLunchApp.mapper.DiscountCodeMapper;
 import pl.dodo.eLunchApp.model.DiscountCode;
@@ -16,7 +15,6 @@ import pl.dodo.eLunchApp.model.User;
 import pl.dodo.eLunchApp.repository.DiscountCodeRepository;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -35,39 +33,43 @@ public class DiscountCodeServiceImpl extends BaseService implements DiscountCode
     }
 
     @Override
+    public void add(DiscountCodeDTOExtended dtoExtended) {
+        addEntity(dtoExtended, discountCodeRepository, discountCodeMapper::mapToEntity);
+    }
+
+    @Override
     @CacheEvict(cacheNames = "discountCodes", allEntries = true)
-    public Result<Void> put(UUID uuid, DiscountCodeDTOExtended dtoExtended) {
+    public void edit(UUID uuid, DiscountCodeDTOExtended dtoExtended) throws eLunchError.InvalidUuid, eLunchError.ObjectNotFound {
         UUID dtoUuid = dtoExtended.getDiscountCodeDTOBasic().getUuid();
         if (dtoUuid.equals(uuid))
-            return Result.failure(new eLunchError.InvalidUuid(dtoUuid,uuid));
+            throw new eLunchError.InvalidUuid(dtoUuid,uuid);
 
-        Optional<DiscountCode> byUuid = discountCodeRepository.findByUuid(uuid);
-        if (byUuid.isEmpty())
-            return Result.failure(new eLunchError.ObjectNotFound(DiscountCode.class));
+        DiscountCode byUuid = discountCodeRepository.findByUuid(uuid)
+        .orElseThrow(() -> new eLunchError.ObjectNotFound(DiscountCode.class));
 
-        DiscountCode discountCode = byUuid.get();
+        DiscountCode discountCode = discountCodeMapper.mapToEntity(dtoExtended);
 
-        Result<List<User>> userListResult = validateList(discountCode.getUsers(), User.class, userService);
-        if (!userListResult.isSuccess())
-            return Result.failure(userListResult.getError());
+        List<Restaurant> restaurantListResult = validateList(discountCode.getRestaurants(), restaurantService);
+        List<User> userListResult = validateList(discountCode.getUsers(), userService);
 
-        Result<List<Restaurant>> restaurantListResult = validateList(discountCode.getRestaurants(), Restaurant.class, restaurantService);
-        if (!restaurantListResult.isSuccess())
-            return Result.failure(restaurantListResult.getError());
-
-        discountCode.setUsers(userListResult.getData());
-        discountCode.setRestaurants(restaurantListResult.getData());
-        return Result.success(null);
+        discountCode.setUsers(userListResult);
+        discountCode.setRestaurants(restaurantListResult);
+        byUuid.edit(discountCode);
     }
 
     @Override
     @CacheEvict(cacheNames = "discountCodes", key = "#uuid")
-    public Result<Void> delete(UUID uuid) {
-        return deleteEntity(uuid,discountCodeRepository);
+    public void delete(UUID uuid) throws eLunchError.ObjectNotFound {
+        deleteEntity(uuid,discountCodeRepository);
     }
 
     @Override
-    public Result<DiscountCodeDTOExtended> getByUuid(UUID uuid) {
-        return getEntityByUuid(uuid,discountCodeRepository,discountCodeMapper::mapToDtoExtended, DiscountCode.class);
+    public DiscountCodeDTOExtended getByUuid(UUID uuid) throws eLunchError.ObjectNotFound {
+        return getDtoByUuid(uuid,discountCodeRepository,discountCodeMapper::mapToDtoExtended, DiscountCode.class);
+    }
+
+    @Override
+    public DiscountCode validate(DiscountCode object) throws eLunchError.ObjectNotFound {
+        return getEntityByUuid(discountCodeRepository, object.getUuid(), DiscountCode.class);
     }
 }

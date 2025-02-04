@@ -18,4 +18,7 @@ public class OpenTimeDTOExtended {
 
 	@NotNull
 	private RestaurantDTOId restaurantDTO;
+
+	@NotNull
+	private OpenTimeDTOBasic openTimeDTOBasic;
 }

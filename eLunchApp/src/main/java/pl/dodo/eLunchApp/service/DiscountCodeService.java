@@ -2,14 +2,16 @@ package pl.dodo.eLunchApp.service;
 
 import pl.dodo.eLunchApp.dto.Discount.DiscountCodeDTOBasic;
 import pl.dodo.eLunchApp.dto.Discount.DiscountCodeDTOExtended;
-import pl.dodo.eLunchApp.exceptions.Result;
+import pl.dodo.eLunchApp.exceptions.eLunchError;
+import pl.dodo.eLunchApp.model.DiscountCode;
 
 import java.util.List;
 import java.util.UUID;
 
-public interface DiscountCodeService {
+public interface DiscountCodeService extends ValidationService<DiscountCode> {
     List<DiscountCodeDTOBasic> getAll();
-    Result<Void> put(UUID uuid, DiscountCodeDTOExtended dtoExtended);
-    Result<Void> delete(UUID uuid);
-    Result<DiscountCodeDTOExtended> getByUuid(UUID uuid);
+    void add(DiscountCodeDTOExtended dtoExtended);
+    void edit(UUID uuid, DiscountCodeDTOExtended dtoExtended) throws eLunchError.InvalidUuid, eLunchError.ObjectNotFound;
+    void delete(UUID uuid) throws eLunchError.ObjectNotFound;
+    DiscountCodeDTOExtended getByUuid(UUID uuid) throws eLunchError.ObjectNotFound;
 }

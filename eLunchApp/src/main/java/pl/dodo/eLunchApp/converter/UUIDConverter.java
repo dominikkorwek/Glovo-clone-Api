@@ -5,7 +5,6 @@ import jakarta.persistence.Converter;
 
 import java.util.UUID;
 
-//konwertowanie z bazą danych
 @Converter(autoApply = true)
 public class UUIDConverter implements AttributeConverter<UUID,String> {
 

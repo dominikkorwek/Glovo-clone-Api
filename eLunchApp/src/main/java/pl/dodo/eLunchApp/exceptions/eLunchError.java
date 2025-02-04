@@ -5,11 +5,35 @@ import pl.dodo.eLunchApp.model.OrderStatus;
 
 import java.util.UUID;
 
-public sealed interface eLunchError extends Error {
-    // remember to add newly error to connected to its controller
-    record ObjectNotFound(Class<?> objectName) implements eLunchError {}
-    record WrongOrderStatus(@NotNull OrderStatus status) implements eLunchError {}
-    record InvalidUuid(UUID expected, UUID got) implements eLunchError {}
-    record InvalidCall(String message) implements eLunchError {}
-    record InvalidValidation(Class<?> objectName) implements eLunchError{}
+public sealed class eLunchError extends RuntimeException permits
+        eLunchError.ObjectNotFound, eLunchError.WrongOrderStatus, eLunchError.InvalidUuid,
+        eLunchError.InvalidValidation {
+
+    public eLunchError(String message) {
+        super(message);
+    }
+
+    public static final class ObjectNotFound extends eLunchError {
+        public ObjectNotFound(Class<?> objectName) {
+            super("Object not found: " + objectName.getSimpleName());
+        }
+    }
+
+    public static final class WrongOrderStatus extends eLunchError {
+        public WrongOrderStatus(@NotNull OrderStatus status) {
+            super("Wrong order status: " + status);
+        }
+    }
+
+    public static final class InvalidUuid extends eLunchError {
+        public InvalidUuid(UUID expected, UUID got) {
+            super("Invalid UUID. Expected: " + expected + ", got: " + got);
+        }
+    }
+
+    public static final class InvalidValidation extends eLunchError {
+        public InvalidValidation(Class<?> objectName) {
+            super("Invalid validation for object: " + objectName.getSimpleName());
+        }
+    }
 }

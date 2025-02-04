@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import pl.dodo.eLunchApp.dto.User.UserDTOExtended;
-import pl.dodo.eLunchApp.dto.User.UserDTOId;
 import pl.dodo.eLunchApp.events.OperationEvidenceCreator;
 import pl.dodo.eLunchApp.service.UserService;
 import pl.dodo.eLunchApp.validator.GroupsValidator;

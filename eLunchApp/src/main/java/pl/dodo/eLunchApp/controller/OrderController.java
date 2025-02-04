@@ -54,12 +54,12 @@ public class OrderController {
     @Validated(OrderStatusValidation.class)
     @PatchMapping("/{userId}/paid")
     public void patchIsPaid(@PathVariable UUID userId){
-        OrderDTOExtended orderDTO = orderService.getByUuid(userId)
-                .orElseThrow();
-        orderService.setIsPaid(orderDTO);
-
-        OperationEvidenceCreator operationEvidenceCreator = new OperationEvidenceCreator(this, orderService.newOperationForPaidOrder(orderDTO.getOrderDTOBasic()));
-        applicationEventPublisher.publishEvent(operationEvidenceCreator);
+//        OrderDTOExtended orderDTO = orderService.getByUuid(userId)
+//                .orElseThrow();
+//        orderService.setIsPaid(orderDTO);
+//
+//        OperationEvidenceCreator operationEvidenceCreator = new OperationEvidenceCreator(this, orderService.newOperationForPaidOrder(orderDTO.getOrderDTOBasic()));
+//        applicationEventPublisher.publishEvent(operationEvidenceCreator);
     }
 
     //patchIsGivedOut

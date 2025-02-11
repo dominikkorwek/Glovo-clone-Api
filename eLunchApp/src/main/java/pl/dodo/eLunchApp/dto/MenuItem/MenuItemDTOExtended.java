@@ -20,10 +20,10 @@ public class MenuItemDTOExtended {
 
 	@NotNull
 	@Size(min = 1)
-	private List<DishDTOId> dishDTOS;
+	private List<DishDTOId> dishes;
 
 	@NotNull
-	private RestaurantDTOId restaurantDTO;
+	private RestaurantDTOId restaurant;
 
 	private MenuItemDTOBasic menuItemDTOBasic;
 }

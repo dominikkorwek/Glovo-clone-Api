@@ -15,8 +15,8 @@ import java.util.List;
 public class DelivererDTOExtended {
 
 	@Nullable
-	@Null(groups = GroupsValidator.DelivererNewDelivererValidation.class)
-	private List<OrderDTOBasic> orderDTOS;
+	@Null(groups = GroupsValidator.DelivererValid.class)
+	private List<OrderDTOBasic> orders;
 
 	@NotNull
 	private EmployeeDTOExtended employeeDTOExtended;

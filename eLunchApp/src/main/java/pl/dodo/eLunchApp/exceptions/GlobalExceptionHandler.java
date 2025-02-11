@@ -33,6 +33,30 @@ public class GlobalExceptionHandler {
         return getResponseEntity(e.getMessage(), status, request.getRequestURI());
     }
 
+    @ExceptionHandler(eLunchError.ObjectNotFound.class)
+    public ResponseEntity<ErrorWrapper> handleJsonProcessingException(eLunchError.ObjectNotFound e, HttpServletRequest request) {
+        HttpStatusCode status = HttpStatus.INTERNAL_SERVER_ERROR;
+        return getResponseEntity(e.getMessage(), status, request.getRequestURI());
+    }
+
+    @ExceptionHandler(eLunchError.WrongOrderStatus.class)
+    public ResponseEntity<ErrorWrapper> handleJsonProcessingException(eLunchError.WrongOrderStatus e, HttpServletRequest request) {
+        HttpStatusCode status = HttpStatus.BAD_REQUEST;
+        return getResponseEntity(e.getMessage(), status, request.getRequestURI());
+    }
+
+    @ExceptionHandler(eLunchError.InvalidUuid.class)
+    public ResponseEntity<ErrorWrapper> handleJsonProcessingException(eLunchError.InvalidUuid e, HttpServletRequest request) {
+        HttpStatusCode status = HttpStatus.BAD_REQUEST;
+        return getResponseEntity(e.getMessage(), status, request.getRequestURI());
+    }
+
+    @ExceptionHandler(eLunchError.InvalidValidation.class)
+    public ResponseEntity<ErrorWrapper> handleJsonProcessingException(eLunchError.InvalidValidation e, HttpServletRequest request) {
+        HttpStatusCode status = HttpStatus.INTERNAL_SERVER_ERROR;
+        return getResponseEntity(e.getMessage(), status, request.getRequestURI());
+    }
+
     private static ResponseEntity<ErrorWrapper> getResponseEntity(String message, HttpStatusCode status, String uri){
         ErrorWrapper errorWrapper = new ErrorWrapper(message, status, uri, status);
         return new ResponseEntity<>(errorWrapper, status);

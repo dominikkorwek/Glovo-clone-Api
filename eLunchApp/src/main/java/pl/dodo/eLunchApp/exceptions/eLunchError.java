@@ -15,7 +15,7 @@ public sealed class eLunchError extends RuntimeException permits
 
     public static final class ObjectNotFound extends eLunchError {
         public ObjectNotFound(Class<?> objectName) {
-            super("Object not found: " + objectName.getSimpleName());
+            super("Object not found in repository: " + objectName.getSimpleName());
         }
     }
 

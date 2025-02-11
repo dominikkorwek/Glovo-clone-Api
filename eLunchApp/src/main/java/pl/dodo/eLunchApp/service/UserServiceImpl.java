@@ -6,6 +6,7 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import pl.dodo.eLunchApp.dto.DeliveryAddress.DeliveryAddressDTOExtended;
 import pl.dodo.eLunchApp.dto.User.UserDTOBasic;
 import pl.dodo.eLunchApp.dto.User.UserDTOExtended;
 import pl.dodo.eLunchApp.dto.User.UserDTOId;
@@ -25,7 +26,7 @@ public class UserServiceImpl extends BaseService implements UserService{
 
     private final UserRepository userRepository;
     private final UserMapper userMapper;
-    private final DeliveryAdressService deliveryAdressService;
+    private final DeliveryAddressService deliveryAddressService;
     private final OrderService orderService;
     private final DiscountCodeService discountCodeService;
 
@@ -58,7 +59,7 @@ public class UserServiceImpl extends BaseService implements UserService{
         List<DiscountCode> discountCodes = validateList(userNew.getDiscountCodes(), discountCodeService);
 
         if (userNew.getAddresses() != null) {
-            List<DeliveryAddress> deliveryAddresses = validateList(userNew.getAddresses(), deliveryAdressService);
+            List<DeliveryAddress> deliveryAddresses = validateList(userNew.getAddresses(), deliveryAddressService);
             userNew.setAddresses(deliveryAddresses);
         }
 
@@ -86,6 +87,11 @@ public class UserServiceImpl extends BaseService implements UserService{
 
         userRepository.findByUuid(uuid)
                 .orElseThrow(() -> new eLunchError.ObjectNotFound(User.class));
+    }
+
+    @Override
+    public List<DeliveryAddressDTOExtended> getAddressDTOsByUser(UUID userUuid) {
+        return getByUuid(userUuid).getUserDTOBasic().getAddresses();
     }
 
     @Override

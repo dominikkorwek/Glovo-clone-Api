@@ -20,7 +20,5 @@ public class Deliverer extends Employee<Deliverer> {
     @Override
     public void edit(Deliverer other) {
         super.edit(other);
-        for(int i = 0 ; i < orders.size(); ++i)
-            orders.get(i).edit(other.orders.get(i));
     }
 }

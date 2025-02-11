@@ -9,7 +9,7 @@ import pl.dodo.eLunchApp.dto.PersonalData.PersonalDataDTOExtended;
 public class EmployeeDTOBasic {
 	@NotNull
 	@Embedded
-	private PersonalDataDTOExtended personalDataDTO;
+	private PersonalDataDTOExtended personalData;
 
 	@NotNull
 	private EmployeeDTOId employeeDTOId;

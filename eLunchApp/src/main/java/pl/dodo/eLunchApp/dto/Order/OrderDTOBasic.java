@@ -16,10 +16,11 @@ import java.util.UUID;
 public class OrderDTOBasic {
 
 	@NotNull
+	@Null(groups = GroupsValidator.NewObjectValid.class)
 	private UUID uuid;
 
-	@Null(groups = GroupsValidator.OrderValidation.class)
-	@NotNull(groups = GroupsValidator.OrderStatusValidation.class)
+	@Null(groups = GroupsValidator.OrderValid.class)
+	@NotNull(groups = GroupsValidator.PaidOutStatusValid.class)
 	@Embedded
 	private OrderStatusDTOBasic orderStatusDTO;
 
@@ -34,6 +35,6 @@ public class OrderDTOBasic {
 
 	@Digits(integer = 10, fraction = 2)
 	@Min(0)
-	@Null(groups = GroupsValidator.OrderValidation.class)
+	@Null(groups = GroupsValidator.OrderValid.class)
 	private BigDecimal price;
 }

@@ -18,7 +18,7 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 @CacheConfig(cacheNames = "deliveryAddreses")
-public class DeliveryAdressServiceImpl extends BaseService implements DeliveryAdressService{
+public class DeliveryAddressServiceImpl extends BaseService implements DeliveryAddressService {
 
     private final DeliveryAddressRepository deliveryAddressRepository;
     private final DeliveryAddressMapper deliveryAddressMapper;

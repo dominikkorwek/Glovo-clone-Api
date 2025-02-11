@@ -5,7 +5,8 @@ import org.springframework.cache.annotation.CacheConfig;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-import pl.dodo.eLunchApp.dto.Dish.DishDTOExtendedd;
+import pl.dodo.eLunchApp.dto.Dish.DishDTOExtended;
+import pl.dodo.eLunchApp.dto.Dish.DishDTOId;
 import pl.dodo.eLunchApp.exceptions.eLunchError;
 import pl.dodo.eLunchApp.mapper.DishMapper;
 import pl.dodo.eLunchApp.model.Dish;
@@ -28,18 +29,18 @@ public class DishServiceImpl extends BaseService implements DishService{
 
     @Override
     @Cacheable(cacheNames = "dishes")
-    public List<DishDTOExtendedd> getAll() {
-        return getAllEntites(dishRepository, dishMapper::mapToDtoExtended);
+    public List<DishDTOId> getAll() {
+        return getAllEntites(dishRepository, dishMapper::mapToDtoId);
     }
 
     @Override
-    public void add(DishDTOExtendedd dtoExtendedd) {
+    public void add(DishDTOExtended dtoExtendedd) {
         addEntity(dtoExtendedd, dishRepository, dishMapper::mapToEntity);
     }
 
     @Override
     @CacheEvict(cacheNames = "dishes", allEntries = true)
-    public void edit(UUID uuid, DishDTOExtendedd dtoExtended) throws eLunchError.ObjectNotFound, eLunchError.InvalidUuid {
+    public void edit(UUID uuid, DishDTOExtended dtoExtended) throws eLunchError.ObjectNotFound, eLunchError.InvalidUuid {
         UUID dtoUuid = dtoExtended.getDishDTOId().getUuid();
         if (!dtoUuid.equals(uuid))
             throw new eLunchError.InvalidUuid(dtoUuid,uuid);
@@ -64,7 +65,7 @@ public class DishServiceImpl extends BaseService implements DishService{
     }
 
     @Override
-    public DishDTOExtendedd getByUuid(UUID uuid) throws eLunchError.ObjectNotFound {
+    public DishDTOExtended getByUuid(UUID uuid) throws eLunchError.ObjectNotFound {
         return getDtoByUuid(uuid,dishRepository,dishMapper::mapToDtoExtended, Dish.class);
     }
 

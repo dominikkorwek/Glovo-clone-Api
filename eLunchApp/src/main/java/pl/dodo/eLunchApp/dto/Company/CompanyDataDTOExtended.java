@@ -13,7 +13,7 @@ public class CompanyDataDTOExtended {
 
 	@Embedded
 	@NotNull
-	private AddressDTOExtended addressDTOExtended;
+	private AddressDTOExtended address;
 
 	@NotNull
 	private String NIP;

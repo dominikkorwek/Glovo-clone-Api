@@ -1,7 +1,9 @@
 package pl.dodo.eLunchApp.dto.Employee;
 
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Null;
 import lombok.Data;
+import pl.dodo.eLunchApp.validator.GroupsValidator;
 
 import java.util.UUID;
 
@@ -13,6 +15,7 @@ public class EmployeeDTOId {
 //		public interface Extended extends Basic {}
 //	}
 	@NotNull
+	@Null(groups = GroupsValidator.NewObjectValid.class)
 	private UUID uuid;
 }
 

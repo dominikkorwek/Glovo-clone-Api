@@ -27,7 +27,7 @@ public class OperationEvidenceListener {
     @EventListener
     public void onAddOperation(OperationEvidenceCreator operationEvidenceCreator){
         UserDTOExtended userDTO = operationEvidenceCreator.getUserDTO();
-        OperationEvidence operationEvidence = userDTO.getOperationEvidence().stream()
+        OperationEvidence operationEvidence = userDTO.getOperationEvidenceDto().stream()
                 .findFirst()
                 .map(mapper::mapToEntity)
                 .orElseThrow();

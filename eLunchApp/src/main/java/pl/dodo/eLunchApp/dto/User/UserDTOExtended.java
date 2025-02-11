@@ -6,7 +6,6 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Null;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import pl.dodo.eLunchApp.dto.DeliveryAddress.DeliveryAddressDTOExtended;
 import pl.dodo.eLunchApp.dto.Discount.DiscountCodeDTOBasic;
 import pl.dodo.eLunchApp.dto.LoginData.LoginDataDTOBasic;
 import pl.dodo.eLunchApp.dto.OperationEvidence.OperationEvidenceDTOExtended;
@@ -21,20 +20,20 @@ import java.util.List;
 public class UserDTOExtended {
 	@NotNull
 	@Embedded
-	private LoginDataDTOBasic loginData;
+	private LoginDataDTOBasic loginDataDto;
 
 	@JsonIgnore
 	@Nullable
-	@Null(groups = GroupsValidator.UserDataUpdateValidation.class)
-	private List<OrderDTOBasic> orders;
+	@Null(groups = GroupsValidator.UserValid.class)
+	private List<OrderDTOBasic> ordersDtos;
 
 	@NotNull
-	@Size(max = 0, groups = GroupsValidator.UserDataUpdateValidation.class)
-	@Size(min = 1, max = 1, groups = GroupsValidator.UserNewOperationValidation.class)
-	private List<OperationEvidenceDTOExtended> operationEvidence;
+	@Size(max = 0, groups = GroupsValidator.UserValid.class)
+	@Size(min = 1, max = 1, groups = GroupsValidator.NewOperationValid.class)
+	private List<OperationEvidenceDTOExtended> operationEvidenceDto;
 
 	@Nullable
-	private List<DiscountCodeDTOBasic> discountCodes;
+	private List<DiscountCodeDTOBasic> discountCodeDTOS;
 
 	@NotNull
 	private Archive archive;

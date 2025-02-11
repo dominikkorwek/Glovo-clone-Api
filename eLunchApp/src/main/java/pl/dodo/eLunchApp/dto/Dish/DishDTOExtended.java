@@ -12,7 +12,7 @@ import javax.annotation.Nullable;
 import java.util.List;
 
 @Data
-public class DishDTOExtendedd {
+public class DishDTOExtended {
 
 	private DishDTOId dishDTOId;
 
@@ -21,9 +21,9 @@ public class DishDTOExtendedd {
 	private Integer quantity;
 
 	@NotNull
-	private ProductDTOBasic productDTO;
+	private ProductDTOBasic product;
 
 	@Nullable
-	@Null(groups = GroupsValidator.DishDataUpdateValidation.class)
-	private List<MenuItemDTOBasic> menuItemDTOS;
+	@Null(groups = GroupsValidator.DishValid.class)
+	private List<MenuItemDTOBasic> menuItems;
 }

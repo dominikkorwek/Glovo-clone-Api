@@ -8,9 +8,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import pl.dodo.eLunchApp.dto.Employee.EmployeeDTOBasic;
-import pl.dodo.eLunchApp.dto.Employee.EmployeeDTOExtended;
-import pl.dodo.eLunchApp.service.EmployeeService;
+import pl.dodo.eLunchApp.dto.DeliveryAddress.DeliveryAddressDTOExtended;
+import pl.dodo.eLunchApp.service.DeliveryAddressService;
 import pl.dodo.eLunchApp.validator.GroupsValidator;
 
 import java.util.List;
@@ -18,40 +17,41 @@ import java.util.UUID;
 
 @Validated
 @RestController
-@RequestMapping(value = "/employee", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/deliveryAddress", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
-public class EmployeeController {
-    private final EmployeeService employeeService;
+public class DeliveryAddressController {
+    private final DeliveryAddressService deliveryAddressService;
 
     @GetMapping
-    public ResponseEntity<List<EmployeeDTOBasic>> getAll(){
-        return new ResponseEntity<>(employeeService.getAll(), HttpStatus.OK);
+    public ResponseEntity<List<DeliveryAddressDTOExtended>> getAll(){
+        return new ResponseEntity<>(deliveryAddressService.getAll(), HttpStatus.OK);
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<EmployeeDTOExtended> get(@PathVariable UUID uuid){
-        return new ResponseEntity<>(employeeService.getByUuid(uuid), HttpStatus.OK);
+    public ResponseEntity<DeliveryAddressDTOExtended> get(@PathVariable UUID uuid){
+        return new ResponseEntity<>(deliveryAddressService.getByUuid(uuid), HttpStatus.OK);
     }
 
     @PostMapping
     @Transactional
     @Validated(GroupsValidator.NewObjectValid.class)
-    public ResponseEntity<Void> add(@RequestBody @Valid EmployeeDTOExtended dtoExtended){
-        employeeService.add(dtoExtended);
+    public ResponseEntity<Void> add(@RequestBody @Valid DeliveryAddressDTOExtended dtoExtended){
+        deliveryAddressService.add(dtoExtended);
         return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{uuid}")
     @Transactional
-    public ResponseEntity<Void> edit(@PathVariable UUID uuid, @RequestBody @Valid EmployeeDTOExtended dtoExtended){
-        employeeService.edit(uuid,dtoExtended);
+    public ResponseEntity<Void> edit(@PathVariable UUID uuid, @RequestBody @Valid DeliveryAddressDTOExtended dtoExtended){
+        deliveryAddressService.edit(uuid,dtoExtended);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")
     @Transactional
     public ResponseEntity<Void> delete(@PathVariable UUID uuid){
-        employeeService.delete(uuid);
+        deliveryAddressService.delete(uuid);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
+
 }

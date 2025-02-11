@@ -32,7 +32,7 @@ public class OrderServiceImpl extends BaseService implements OrderService{
     private final UserService userService;
     private final DiscountCodeService discountCodeServiceImpl;
     private final OrderItemService orderItemService;
-    private final DelivererService delivererServiceImpl;
+    private final DelivererService delivererService;
     private final RestaurantService restaurantService;
 
     @Override
@@ -63,7 +63,7 @@ public class OrderServiceImpl extends BaseService implements OrderService{
         DiscountCode discountCode = validateObject(orderNew.getDiscountCode(), discountCodeServiceImpl);
         List<OrderItem> orderItems = validateList(orderNew.getOrderItems(), orderItemService);
         User user = validateObject(orderNew.getUser(), userService);
-        Deliverer deliverer = validateObject(orderNew.getDeliverer(), delivererServiceImpl);
+        Deliverer deliverer = validateObject(orderNew.getDeliverer(), delivererService);
         Restaurant restaurant = validateObject(orderNew.getRestaurant(), restaurantService);
 
         orderNew.setDiscountCode(discountCode);
@@ -116,7 +116,7 @@ public class OrderServiceImpl extends BaseService implements OrderService{
 
     @SneakyThrows
     @Override
-    public void setIsGivenOut(UUID uuid, OrderStatusDTOBasic basicOrderStatusDto) {
+    public void setIsGaveOut(UUID uuid, OrderStatusDTOBasic basicOrderStatusDto) {
         Order byUuid = orderRepository.findByUuid(uuid)
                 .orElseThrow( () ->new eLunchError.ObjectNotFound(Order.class));
 
@@ -131,8 +131,18 @@ public class OrderServiceImpl extends BaseService implements OrderService{
     public UserDTOExtended newOperationForPaidOrder(OrderDTOBasic basicOrderDto) {
         UserDTOExtended byUuid = userService.getByUuid(basicOrderDto.getUser().getUuid());
 
-        byUuid.setOperationEvidence(List.of(newEwidenceForOrderPayment(basicOrderDto)));
+        byUuid.setOperationEvidenceDto(List.of(newEwidenceForOrderPayment(basicOrderDto)));
         return byUuid;
+    }
+
+    @Override
+    public List<OrderDTOBasic> getAllbyUser(UUID userUuid) {
+        return userService.getByUuid(userUuid).getOrdersDtos();
+    }
+
+    @Override
+    public List<OrderDTOBasic> getAllbyDeliverer(UUID delivererUuid) {
+        return delivererService.getByUuid(delivererUuid).getOrders();
     }
 
     private OperationEvidenceDTOExtended newEwidenceForOrderPayment(OrderDTOBasic orderDTO) {

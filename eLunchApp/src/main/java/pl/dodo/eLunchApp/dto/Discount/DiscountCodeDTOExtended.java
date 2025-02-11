@@ -22,7 +22,7 @@ public class DiscountCodeDTOExtended {
 	private List<UserDTOId> users;
 
 	@Nullable
-	private List<RestaurantDTOId> restaurantDTOS;
+	private List<RestaurantDTOId> restaurants;
 
 	@Digits(integer = 10, fraction = 2)
 	@Min(0)

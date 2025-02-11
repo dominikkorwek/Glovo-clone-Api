@@ -10,7 +10,7 @@ import pl.dodo.eLunchApp.enums.Archive;
 public class EmployeeDTOExtended {
 	@NotNull
 	@Embedded
-	private LoginDataDTOBasic logginData;
+	private LoginDataDTOBasic loginData;
 
 	@NotNull
 	private Archive archive;

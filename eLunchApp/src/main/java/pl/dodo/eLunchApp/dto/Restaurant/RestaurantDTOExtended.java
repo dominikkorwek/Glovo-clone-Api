@@ -28,11 +28,11 @@ public class RestaurantDTOExtended {
 	private List<OpenTimeDTOExtended> openTimeDTOS;
 
 	@Nullable
-	@Null(groups = GroupsValidator.RestaurantDataUpdateValidation.class)
+	@Null(groups = GroupsValidator.RestaurantValid.class)
 	private List<OrderDTOBasic> orderDTOS;
 
 	@Nullable
-	@Null(groups = GroupsValidator.RestaurantDataUpdateValidation.class)
+	@Null(groups = GroupsValidator.RestaurantValid.class)
 	private List<MenuItemDTOExtended> menuItemDTOS;
 
 	@JsonIgnore

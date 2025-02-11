@@ -19,11 +19,11 @@ public class OrderStatusDTOBasic {
 	@NotNull
 	private Boolean isPaid;
 
-	@NotNull(groups = GroupsValidator.GiveOutStatusValidation.class)
+	@NotNull(groups = GroupsValidator.GaveOutStatusValid.class)
 	@Nullable
 	private Instant giveOutTime;
 
-	@NotNull(groups = GroupsValidator.DeliveryValidation.class)
+	@NotNull(groups = GroupsValidator.DeliveryValid.class)
 	@Nullable
 	private Instant deliveryTime;
 }

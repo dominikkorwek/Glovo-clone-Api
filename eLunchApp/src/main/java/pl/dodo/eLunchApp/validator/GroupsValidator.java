@@ -1,13 +1,15 @@
 package pl.dodo.eLunchApp.validator;
 
 public interface GroupsValidator {
-    interface DelivererNewDelivererValidation {}
-    interface DishDataUpdateValidation {}
-    interface OrderValidation {}
-    interface OrderStatusValidation {}
-    interface GiveOutStatusValidation {}
-    interface DeliveryValidation {}
-    interface UserDataUpdateValidation {}
-    interface UserNewOperationValidation {}
-    interface RestaurantDataUpdateValidation {}
+    interface DelivererValid {}
+    interface DishValid {}
+    interface OrderValid {}
+    interface PaidOutStatusValid {}
+    interface GaveOutStatusValid {}
+    interface DeliveryValid {}
+    interface UserValid {}
+    interface NewOperationValid {}
+    interface RestaurantValid {}
+    interface DelivererExtendedValid {}
+    interface NewObjectValid {}
 }

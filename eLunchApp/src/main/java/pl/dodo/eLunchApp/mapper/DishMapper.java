@@ -2,7 +2,7 @@ package pl.dodo.eLunchApp.mapper;
 
 import org.mapstruct.InheritInverseConfiguration;
 import org.mapstruct.Mapper;
-import pl.dodo.eLunchApp.dto.Dish.DishDTOExtendedd;
+import pl.dodo.eLunchApp.dto.Dish.DishDTOExtended;
 import pl.dodo.eLunchApp.dto.Dish.DishDTOId;
 import pl.dodo.eLunchApp.model.Dish;
 
@@ -11,8 +11,8 @@ public interface DishMapper {
 
     DishDTOId mapToDtoId(Dish dish);
 
-    DishDTOExtendedd mapToDtoExtended(Dish dish);
+    DishDTOExtended mapToDtoExtended(Dish dish);
 
     @InheritInverseConfiguration(name = "mapToDtoExtended")
-    Dish mapToEntity(DishDTOExtendedd dtoExtended);
+    Dish mapToEntity(DishDTOExtended dtoExtended);
 }

@@ -1,6 +1,5 @@
 package pl.dodo.eLunchApp.controller;
 
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import jakarta.validation.groups.Default;
 import lombok.RequiredArgsConstructor;
@@ -18,14 +17,13 @@ import pl.dodo.eLunchApp.validator.GroupsValidator;
 import java.util.List;
 import java.util.UUID;
 
-
 @Validated
 @RestController
-@RequestMapping(value = "/deliverers", produces = MediaType.APPLICATION_JSON_VALUE)
+@RequestMapping(value = "/deliverer", produces = MediaType.APPLICATION_JSON_VALUE)
 @RequiredArgsConstructor
 public class DelivererController {
 
-    interface NewDelivererValidation extends Default, GroupsValidator.DelivererNewDelivererValidation {}
+    interface DelivererValid extends Default, GroupsValidator.DelivererValid {}
 
     private final DelivererService delivererService;
 
@@ -35,20 +33,30 @@ public class DelivererController {
     }
 
     @GetMapping("/{uuid}")
-    public ResponseEntity<DelivererDTOExtended> get(@PathVariable UUID uuid, HttpServletRequest request){
-        return null;
+    public ResponseEntity<DelivererDTOExtended> get(@PathVariable UUID uuid){
+        return new ResponseEntity<>(delivererService.getByUuid(uuid), HttpStatus.OK);
+    }
+
+    @PostMapping
+    @Transactional
+    @Validated({DelivererValid.class, GroupsValidator.NewObjectValid.class})
+    public ResponseEntity<Void> add(@RequestBody @Valid DelivererDTOExtended dtoExtended){
+        delivererService.add(dtoExtended);
+        return new ResponseEntity<>(HttpStatus.CREATED);
     }
 
     @PutMapping("/{uuid}")
     @Transactional
-    @Validated(NewDelivererValidation.class)
-    public ResponseEntity<Void> put(@PathVariable UUID uuid, @RequestBody @Valid DelivererDTOExtended basicDelivererDto){
-        return null;
+    @Validated(DelivererValid.class)
+    public ResponseEntity<Void> edit(@PathVariable UUID uuid, @RequestBody @Valid DelivererDTOExtended dtoExtended){
+        delivererService.edit(uuid,dtoExtended);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @DeleteMapping("/{uuid}")
     @Transactional
     public ResponseEntity<Void> delete(@PathVariable UUID uuid){
-        return null;
+        delivererService.delete(uuid);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 }

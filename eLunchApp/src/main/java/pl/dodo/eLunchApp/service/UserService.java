@@ -1,5 +1,6 @@
 package pl.dodo.eLunchApp.service;
 
+import pl.dodo.eLunchApp.dto.DeliveryAddress.DeliveryAddressDTOExtended;
 import pl.dodo.eLunchApp.dto.User.UserDTOBasic;
 import pl.dodo.eLunchApp.dto.User.UserDTOExtended;
 import pl.dodo.eLunchApp.dto.User.UserDTOId;
@@ -17,4 +18,6 @@ public interface UserService extends ValidationService<User>{
     UserDTOExtended getByUuid(UUID uuid) throws eLunchError.ObjectNotFound;
 
     void validateNewOperation(UUID uuid, UserDTOId userDTOId);
+
+    List<DeliveryAddressDTOExtended> getAddressDTOsByUser(UUID userUuid);
 }

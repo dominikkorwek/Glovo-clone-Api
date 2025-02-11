@@ -39,6 +39,10 @@ public class DiscountCode implements Editable<DiscountCode> {
     @Enumerated(EnumType.STRING)
     private DiscountUnit discountUnit;
 
+    @NotNull
+    @Embedded
+    private Period period;
+
     @ManyToMany
     private List<User> users;
 
@@ -54,5 +58,6 @@ public class DiscountCode implements Editable<DiscountCode> {
             users.get(i).edit(other.users.get(i));
         for (int i = 0; i < restaurants.size(); ++i)
             restaurants.get(i).edit(other.restaurants.get(i));
+        period = other.period;
     }
 }

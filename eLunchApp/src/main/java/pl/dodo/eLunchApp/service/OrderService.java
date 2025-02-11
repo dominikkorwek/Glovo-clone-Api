@@ -19,7 +19,11 @@ public interface OrderService extends ValidationService<Order> {
 
     void setIsPaid(UUID uuid);
     void setIsDelivered(UUID uuid, OrderStatusDTOBasic orderStatusDTOBasic);
-    void setIsGivenOut(UUID uuid, OrderStatusDTOBasic orderStatusDTOBasic);
+    void setIsGaveOut(UUID uuid, OrderStatusDTOBasic orderStatusDTOBasic);
 
     UserDTOExtended newOperationForPaidOrder(OrderDTOBasic orderDTOBasic);
+
+    List<OrderDTOBasic> getAllbyUser(UUID userUuid);
+    List<OrderDTOBasic> getAllbyDeliverer(UUID delivererUuid);
+
 }
